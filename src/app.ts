@@ -1,9 +1,10 @@
-const express = require('express');
-const logger = require('./logger');
+import express from 'express';
+import logger from './logger';
 
-const { testRouter } = require('./routes/test');
+import testRouter from './routes/test';
 
-module.exports = (config) => {
+
+module.exports = (config: Config) => {
     const app = express();
     const { PORT } = config;
     app.use('/test', testRouter);
@@ -11,3 +12,4 @@ module.exports = (config) => {
         logger.info(`Simple Tasks app listening on port ${PORT}!`);
     });
 };
+

@@ -1,6 +1,6 @@
 // const oauthModel = require('./src/models/oauth')
 const config: Config = {
-    corsOptions:  {
+    corsOptions: {
         origin: [
             'http://localhost:3000',
             'http://localhost:5000',
@@ -9,7 +9,7 @@ const config: Config = {
         optionsSuccessStatus: 200,
     },
 
-    oauthOptions:  {
+    oauthOptions: {
         // model: oauthModel,
         grants: ['password'],
         debug: true,
@@ -18,7 +18,7 @@ const config: Config = {
         accessTokenLifetime: 864000,
     },
 
-    PORT:  Number(process.env.PORT) || 8080,
+    PORT: Number(process.env.PORT) || 8080,
 };
 
 export default config;

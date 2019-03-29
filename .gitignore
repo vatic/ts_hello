@@ -1,4 +1,6 @@
 node_modules
+.log
+log
 dist
 .idea
 .vscode

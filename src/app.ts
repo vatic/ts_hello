@@ -21,7 +21,7 @@ redisClient.on('connect', () => {
 // --Redis connection
 
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use(morgan('tiny'));
 

@@ -1,11 +1,11 @@
 
-POST http://localhost:8080/api/users HTTP/1.1
+DELETE  http://localhost:8080/api/users/9 HTTP/1.1
 content-type: application/json
 
 {
-    "name": "TestUser_2",
+    "name": "TestUser_9_updated",
     "email": "t_1@mail.com",
-    "password": "123",
-    "role": 3
+    "password": "12345",
+    "role": 1
 }
 

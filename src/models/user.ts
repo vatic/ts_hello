@@ -13,6 +13,8 @@ const userDao = (redisClient: redis.RedisClient) => {
     const hgetAllAsync = promisify(redisClient.hgetall).bind(redisClient);
     const smembersAsync = promisify(redisClient.smembers).bind(redisClient);
     const hmsetAsync = promisify(redisClient.hmset.bind(redisClient));
+    const delAsync = promisify(redisClient.del.bind(redisClient));
+
     const prefix = config.redis.userPrefix;
 
 
@@ -33,24 +35,28 @@ const userDao = (redisClient: redis.RedisClient) => {
 
         async create(user: User): Promise<Object> {
             const ids = await smembersAsync(config.redis.userIdsPrefix);
-            const newId = Math.max.apply(null, (ids.map((e: string) => Number(e)))) + 1;
+            const newId = Math.max(...ids.map((e: string) => Number(e))) + 1;
             const u = Object.assign({}, user, { id: newId });
             const userArr = obj2arr(u);
             const result = await hmsetAsync(`${prefix}:${newId}`, userArr);
             if (result === 'OK') {
-                redisClient.sadd(userIdsPrefix, newId, print);
+                redisClient.sadd(userIdsPrefix, newId.toString(10), print);
             }
             const pr = `${prefix}:${newId}`;
             const newUser = await hgetAllAsync(pr);
-            console.dir(newUser);
             return { result, user: newUser };
         },
 
-        // update(id: number): User {
-        // },
+        async update(user: User): Promise<Object> {
+            const userArr = obj2arr(user);
+            const id = user.id;
+            const result = await hmsetAsync(`${prefix}:${id}`, userArr);
+            return { result, user };
+        },
 
-        delete(id: number): number {
-            return 11;
+        async delete(id: number): Promise<Object>{
+            const result = await delAsync(`${prefix}:${id}`);
+            return { result };
         },
     };
 };

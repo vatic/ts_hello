@@ -1,11 +1,11 @@
 import roles from '../mocks/role';
 
-const userId = (title: String): number | null => {
+const userId = (title: String): number | undefined => {
     const role = roles.find((r: Role) => r.title == title);
-    if(role && role.id) {
+    if (role && role.id) {
         return role.id;
     }
-    return null;
+    return;
 };
 
 const users: User[] = [

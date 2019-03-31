@@ -1,6 +1,6 @@
 declare module 'role'
 
 interface Role {
-    id: number | null,
+    id: number | undefined,
     title: string,
 }

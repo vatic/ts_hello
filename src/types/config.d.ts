@@ -14,9 +14,16 @@ interface OauthOptions {
     accessTokenLifetime: number,
 }
 
+interface Redis {
+    prefix: string,
+    userPrefix: string,
+    userIdsPrefix: string,
+}
+
 interface Config {
     corsOptions: CorsOptions,
     oauthOptions: OauthOptions,
+    redis: Redis,
     PORT: number,
 }
 

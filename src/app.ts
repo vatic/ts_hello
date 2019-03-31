@@ -1,27 +1,31 @@
 import express from 'express';
+import morgan from 'morgan';
 import redis from 'redis';
 
-import testRouter from './controllers/test';
-import usersRouter from "./controllers/users";
+import mainRouter from './routes';
 import logger from './logger';
-import config from "../config";
-import {Server} from "http";
+import config from '../config';
+import { Server } from 'http';
 
 const app = express();
-
 const {PORT} = config;
 
-app.use('/test', testRouter);
-app.use('/users', usersRouter);
 
 // Redis connection
 const redisClient: redis.RedisClient = redis.createClient();
 
+
 redisClient.on('error', err => logger.error(`Redis error: ${err}`));
-redisClient.on('connect', err =>
-    logger.info('Successfully connect to redis'));
+redisClient.on('connect', () => {
+    logger.info(` Successfully connect to redis: ${redisClient.address}`);
+});
 // --Redis connection
 
+
+app.use(morgan('tiny'));
+
+app.use('/api', mainRouter(redisClient));
+app.use('/routes', (_, res) => res.json(app.routes));
 
 const server: Server = app.listen(PORT, () => {
     logger.info(`Simple Tasks app listening on port ${PORT}!`);

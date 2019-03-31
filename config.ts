@@ -18,7 +18,14 @@ const config: Config = {
         accessTokenLifetime: 864000,
     },
 
+    redis: {
+        prefix: 'ts_hello',
+        userPrefix: 'ts_hello:users',
+        userIdsPrefix: 'ts_hello:ids:users',
+    },
+
     PORT: Number(process.env.PORT) || 8080,
+
 };
 
 export default config;

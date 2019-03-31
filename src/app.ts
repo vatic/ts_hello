@@ -6,14 +6,13 @@ import mainRouter from './routes';
 import logger from './logger';
 import config from '../config';
 import { Server } from 'http';
+import bodyParser from 'body-parser';
 
 const app = express();
 const {PORT} = config;
 
-
 // Redis connection
 const redisClient: redis.RedisClient = redis.createClient();
-
 
 redisClient.on('error', err => logger.error(`Redis error: ${err}`));
 redisClient.on('connect', () => {
@@ -21,6 +20,8 @@ redisClient.on('connect', () => {
 });
 // --Redis connection
 
+
+app.use(bodyParser.json())
 
 app.use(morgan('tiny'));
 

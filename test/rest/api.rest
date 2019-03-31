@@ -1,1 +1,11 @@
-http://localhost:8080/api/test
+
+POST http://localhost:8080/api/users HTTP/1.1
+content-type: application/json
+
+{
+    "name": "TestUser_2",
+    "email": "t_1@mail.com",
+    "password": "123",
+    "role": 3
+}
+

@@ -17,8 +17,16 @@ const usersRouter = (redisClient: redis.RedisClient): express.Router => {
         res.json(user);
     };
 
+    const createUserHandler = async (req: express.Request, res: express.Response) => {
+        const user = req.body;
+        // console.dir(user);
+        const result = await dao.create(user);
+        res.json(result);
+    };
+
     router.get('/', allUsersHandler);
     router.get('/:id', userHandler);
+    router.post('/', createUserHandler);
     return router;
 };
 

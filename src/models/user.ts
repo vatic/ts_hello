@@ -1,25 +1,28 @@
 import { promisify } from 'util';
 import redis from 'redis';
 import config from '../../config';
-// import users from '../mocks/user';
+import { obj2arr } from '../util';
 
+
+const { print } = redis;
 
 const userDao = (redisClient: redis.RedisClient) => {
 
+    const userIdsPrefix = config.redis.userIdsPrefix;
+
     const hgetAllAsync = promisify(redisClient.hgetall).bind(redisClient);
     const smembersAsync = promisify(redisClient.smembers).bind(redisClient);
+    const hmsetAsync = promisify(redisClient.hmset.bind(redisClient));
     const prefix = config.redis.userPrefix;
+
 
     return {
         async getAll(): Promise<Array<User | undefined >> {
             const ids = await smembersAsync(config.redis.userIdsPrefix);
             const usersPromises: Array<User> = ids.map((id: string) => {
                 return this.getById(Number(id));
-                // users.push(user);
             });
             return Promise.all(usersPromises);
-            // console.dir(users);
-            // return users;
         },
 
         getById(id: number): Promise<User | undefined> {
@@ -28,8 +31,19 @@ const userDao = (redisClient: redis.RedisClient) => {
             return user;
         },
 
-        create(): number {
-            return 11;
+        async create(user: User): Promise<Object> {
+            const ids = await smembersAsync(config.redis.userIdsPrefix);
+            const newId = Math.max.apply(null, (ids.map((e: string) => Number(e)))) + 1;
+            const u = Object.assign({}, user, { id: newId });
+            const userArr = obj2arr(u);
+            const result = await hmsetAsync(`${prefix}:${newId}`, userArr);
+            if (result === 'OK') {
+                redisClient.sadd(userIdsPrefix, newId, print);
+            }
+            const pr = `${prefix}:${newId}`;
+            const newUser = await hgetAllAsync(pr);
+            console.dir(newUser);
+            return { result, user: newUser };
         },
 
         // update(id: number): User {
